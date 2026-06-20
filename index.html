@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Didactics Academy — English Teacher Exam Prep</title>
+<meta name="description" content="An online learning platform for English students preparing for the CERMF / ENS teacher entrance exam in English didactics.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🎓</text></svg>">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+</head>
+<body>
+
+<div id="login-screen">
+  <div class="login-card">
+    <div class="login-seal">🎓</div>
+    <div class="login-eyebrow">Didactics Academy</div>
+    <h1>English Exam Prep</h1>
+    <p class="sub">CERMF / ENS teacher entrance exam preparation.<br>Enter the shared access password to continue.</p>
+    <form id="login-form">
+      <span class="field-label">Access password</span>
+      <div class="pw-wrap">
+        <input type="password" id="password-input" placeholder="••••••••" autocomplete="off" required>
+        <button type="button" class="pw-toggle" id="pw-toggle">👁</button>
+      </div>
+      <button type="submit" class="btn-primary">Enter the Academy →</button>
+      <div id="login-error" class="hidden">
+        <span>⚠️</span><span>Incorrect password. Please ask your instructor for the access code and try again.</span>
+      </div>
+    </form>
+    <div class="login-foot">Shared access for all students · No individual account needed</div>
+  </div>
+</div>
+
+<div id="app-shell" class="hidden">
+  <button class="menu-toggle" id="menu-toggle">☰</button>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+      <div class="mark">🎓</div>
+      <div class="name">Didactics Academy<span>EFL Exam Prep</span></div>
+    </div>
+    <nav class="sidebar-nav" id="sidebar-nav"></nav>
+    <div class="sidebar-foot">
+      <div class="theme-toggle">
+        <span>🌙 Dark mode</span>
+        <label class="switch"><input type="checkbox" id="theme-switch"><span class="slider"></span></label>
+      </div>
+      <button class="logout-btn" id="logout-btn">Lock & exit session</button>
+      <div class="copyright-sidebar">© Omar El Alaoui</div>
+    </div>
+  </aside>
+
+  <main id="view-root"></main>
+
+  <footer id="app-footer">
+    <div class="footer-inner"></div>
+  </footer>
+</div>
+
+<div id="toast"></div>
+
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script src="smoketest2.js"></script>
+</body>
+</html>
