@@ -1,4 +1,3 @@
-
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap');
 
 :root{
@@ -396,11 +395,12 @@ main#view-root{
   width:20px; height:20px; border-radius:50%; background:var(--primary-soft); color:var(--primary);
   display:flex; align-items:center; justify-content:center; font-size:10.5px; font-weight:800;
 }
-.lp-field textarea, .lp-field input{
+.lp-field textarea, .lp-field input, .lp-field select{
   width:100%; padding:12px 14px; border:1.5px solid var(--border); border-radius:var(--radius-sm);
   background:var(--surface-2); color:var(--ink); font-family:var(--font-body); font-size:13.5px; line-height:1.5; resize:vertical;
 }
-.lp-field textarea:focus, .lp-field input:focus{border-color:var(--primary); outline:none; box-shadow:0 0 0 4px var(--primary-soft);}
+.lp-field textarea:focus, .lp-field input:focus, .lp-field select:focus{border-color:var(--primary); outline:none; box-shadow:0 0 0 4px var(--primary-soft);}
+.lp-select{ cursor:pointer; appearance:auto; }
 .lp-actions{display:flex; gap:10px; margin-top:6px; flex-wrap:wrap;}
 .btn{
   padding:10px 18px; border-radius:var(--radius-sm); border:1px solid var(--border); background:var(--surface);
@@ -632,4 +632,35 @@ body.dark .badge.earned{color:var(--amber);}
   text-align: center;
   margin-top: 10px;
   opacity: 0.7;
+}
+
+/* ============================================================
+   MINISTERIAL SEAL — signature element for MEN-aligned content
+   A double-ring cachet motif, echoing the mastery ring but
+   reserved exclusively for official Ministry-sourced material
+   (Loi-cadre 51-17, CCC, exam structure, system reference).
+   ============================================================ */
+.men-seal{
+  display:inline-flex; align-items:center; gap:7px;
+  font-family:var(--font-mono); font-size:10.5px; font-weight:700;
+  letter-spacing:.04em; text-transform:uppercase;
+  color:var(--amber); background:var(--amber-soft);
+  border:1.5px solid var(--amber); border-radius:999px;
+  padding:4px 11px 4px 7px;
+  position:relative;
+}
+.men-seal .ring{
+  width:16px; height:16px; border-radius:50%;
+  border:1.5px solid var(--amber); display:flex; align-items:center; justify-content:center;
+  font-size:9px; flex-shrink:0;
+}
+.men-seal .ring::before{ content:"\1F1F2\1F1E6"; font-size:8px; line-height:1; } /* 🇲🇦 rendered small */
+.acc-item.is-official{ border-color:var(--amber); border-width:1.5px; }
+.acc-item.is-official .acc-head{ background:linear-gradient(180deg, var(--amber-soft) 0%, transparent 100%); }
+.note-card.is-official{ border-color:var(--amber); border-width:1.5px; }
+.quiz-card.is-official{ border-color:var(--amber); }
+.exam-item.is-official{ border-left:3px solid var(--amber); }
+@media (prefers-reduced-motion: no-preference){
+  .men-seal{ transition: transform .15s ease; }
+  .acc-head:hover .men-seal{ transform: scale(1.04); }
 }
