@@ -324,11 +324,11 @@ function renderTheory(root, param){
 
   const topicsWrap = root.querySelector('#theory-topics');
   topicsWrap.innerHTML = DIDACTICS_TOPICS.map(t => `
-    <div class="acc-item" data-id="${t.id}">
+    <div class="acc-item ${t.official ? 'is-official' : ''}" data-id="${t.id}">
       <button class="acc-head">
         <div class="left">
           <div class="pill">📌</div>
-          <div><h3>${t.name}</h3></div>
+          <div><h3>${t.name}</h3>${t.official ? `<div class="men-seal"><span class="ring"></span>Official MEN reference</div>` : ''}</div>
         </div>
         <span class="chev">▾</span>
       </button>
@@ -598,9 +598,18 @@ function renderInlineMiniQuiz(wrap, questions){
 /* ============================================================
    VIEW: LESSON PLAN BUILDER
    ============================================================ */
+const MEN_LEVELS = [
+  "Tronc Commun (CEF A2/B1)",
+  "1ère Bac Sciences (B1)",
+  "1ère Bac Lettres & Sciences Humaines (B1)",
+  "2ème Bac Sciences (B1+)",
+  "2ème Bac Lettres & Sciences Humaines (B1+)",
+  "Collégial — 3ème année (A2)",
+  "Other / custom level"
+];
 const LP_FIELDS = [
   {key:'objective', label:'Objective', n:1, ph:'By the end of the lesson, students will be able to...'},
-  {key:'level', label:'Level', n:2, ph:'e.g. Intermediate (B1)'},
+  {key:'level', label:'Level', n:2, ph:'e.g. Intermediate (B1)', select: MEN_LEVELS},
   {key:'warmup', label:'Warm-up', n:3, ph:'How will you activate prior knowledge / engage learners?'},
   {key:'presentation', label:'Presentation', n:4, ph:'How will you present the new language/content?'},
   {key:'practice', label:'Practice', n:5, ph:'Controlled practice activity...'},
@@ -624,7 +633,14 @@ function renderLessonPlanBuilder(root){
             ${LP_FIELDS.map(f => `
               <div class="lp-field">
                 <label><span class="n">${f.n}</span>${f.label}</label>
-                <textarea name="${f.key}" rows="${f.key==='level'?1:3}" placeholder="${f.ph}"></textarea>
+                ${f.select ? `
+                  <select name="${f.key}" class="lp-select">
+                    <option value="">— select a level —</option>
+                    ${f.select.map(opt => `<option value="${opt}">${opt}</option>`).join('')}
+                  </select>
+                ` : `
+                  <textarea name="${f.key}" rows="3" placeholder="${f.ph}"></textarea>
+                `}
               </div>
             `).join('')}
             <div class="lp-actions">
@@ -650,6 +666,16 @@ function renderLessonPlanBuilder(root){
   const form = root.querySelector('#lp-form');
   const preview = root.querySelector('#lp-preview');
 
+  function setFieldValue(f, value){
+    const el = form.querySelector(`[name="${f.key}"]`);
+    if(el.tagName === 'SELECT' && value && !f.select.includes(value)){
+      const opt = document.createElement('option');
+      opt.value = value; opt.textContent = value;
+      el.insertBefore(opt, el.firstChild.nextSibling);
+    }
+    el.value = value || '';
+  }
+
   function updatePreview(){
     LP_FIELDS.forEach(f=>{
       const val = form.querySelector(`[name="${f.key}"]`).value.trim();
@@ -671,7 +697,7 @@ function renderLessonPlanBuilder(root){
   });
 
   root.querySelector('#lp-sample').addEventListener('click', ()=>{
-    LP_FIELDS.forEach(f=> form.querySelector(`[name="${f.key}"]`).value = SAMPLE_LESSON_PLAN[f.key]);
+    LP_FIELDS.forEach(f=> setFieldValue(f, SAMPLE_LESSON_PLAN[f.key]));
     updatePreview();
     toast('Sample plan loaded','✨');
   });
@@ -705,7 +731,7 @@ function renderLessonPlanBuilder(root){
     list.querySelectorAll('[data-load]').forEach(btn=>{
       btn.addEventListener('click', ()=>{
         const p = STATE.lessonPlans.find(x=>x.id === btn.closest('.saved-plan-item').dataset.id);
-        LP_FIELDS.forEach(f=> form.querySelector(`[name="${f.key}"]`).value = p[f.key] || '');
+        LP_FIELDS.forEach(f=> setFieldValue(f, p[f.key]));
         updatePreview();
         toast('Plan loaded into editor','📝');
         window.scrollTo({top:0, behavior:'smooth'});
@@ -775,9 +801,10 @@ function renderQuizMenu(root, param){
     </div>
     <div class="quiz-menu-grid">
       ${Object.entries(QUIZ_BANK).map(([key, quiz]) => `
-        <button class="quiz-card" data-quiz="${key}">
+        <button class="quiz-card ${quiz.official ? 'is-official' : ''}" data-quiz="${key}">
           <span class="ic">${quiz.icon}</span>
           <h3>${quiz.title}</h3>
+          ${quiz.official ? `<div class="men-seal" style="margin-bottom:8px;"><span class="ring"></span>Official MEN reference</div>` : ''}
           <div class="meta">${quiz.questions.length} questions · mixed format</div>
           <div class="best">${STATE.quizBest[key] !== undefined ? `Best score: ${STATE.quizBest[key]}%` : 'Not attempted yet'}</div>
         </button>
@@ -970,8 +997,8 @@ function renderExamMenu(root, param){
     </div>
     <div class="exam-list">
       ${EXAM_QUESTIONS.map(q => `
-        <div class="exam-item">
-          <div><div class="q">${q.question}</div><div class="time">⏱ ${q.timeMinutes} minutes</div></div>
+        <div class="exam-item ${q.official ? 'is-official' : ''}">
+          <div><div class="q">${q.question}</div>${q.official ? `<div class="men-seal" style="margin-top:6px;"><span class="ring"></span>Official MEN reference</div>` : ''}<div class="time">⏱ ${q.timeMinutes} minutes</div></div>
           <button class="btn solid" data-exam="${q.id}">Start →</button>
         </div>
       `).join('')}
@@ -1063,9 +1090,10 @@ function renderNotes(root){
     </div>
     <div class="notes-grid">
       ${NOTES_FILES.map(n => `
-        <div class="note-card">
+        <div class="note-card ${n.official ? 'is-official' : ''}">
           <span class="ic">📄</span>
           <h3>${n.title}</h3>
+          ${n.official ? `<div class="men-seal" style="margin-bottom:10px;"><span class="ring"></span>Official MEN reference</div>` : ''}
           <p>${n.desc}</p>
           <button class="btn solid sm" data-note="${n.type}">⬇️ Download PDF</button>
         </div>
@@ -1115,6 +1143,13 @@ function downloadNotePDF(type){
       sub('3. Classroom example'); body('Illustrate the theory with a concrete, realistic classroom example or activity.');
       sub('4. Conclusion'); body('Summarise your argument and restate its pedagogical value or limitations.');
       sub('Sample exam questions'); EXAM_QUESTIONS.forEach(q=> body('• ' + q.question));
+    } else if(type === 'morocco'){
+      heading('Moroccan Education System — Key Reference');
+      DIDACTICS_TOPICS.filter(t=>t.official).forEach(t=>{
+        sub(t.name);
+        body(t.summary);
+        t.points.forEach(p=> body('• ' + p));
+      });
     }
     doc.setFontSize(9); doc.setTextColor(140,150,170);
     doc.text('English Didactics Exam Prep Platform', marginX, 815);
